@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="en-AU">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#14283d">
+  <meta name="description" content="Search across ten BorrowBox library services from one page.">
+  <title>BorrowBox Library Search</title>
+  <style>
+    :root{color-scheme:light;--ink:#172a3d;--muted:#536478;--blue:#194d78;--border:#dce5ed;--bg:#f5f8fb;--white:#fff;--focus:#e6b95c}
+    *{box-sizing:border-box}body{margin:0;background:var(--bg);font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;color:var(--ink);line-height:1.5}
+    .banner{background:linear-gradient(115deg,#14283d,#245276);color:#fff;padding:52px 20px 70px}.wrap{max-width:920px;margin:0 auto}.eyebrow{font-size:.75rem;letter-spacing:.13em;text-transform:uppercase;font-weight:800;color:#aed8ef;margin:0 0 12px}h1{font-size:clamp(1.85rem,4vw,2.85rem);letter-spacing:-.035em;line-height:1.15;margin:0 0 12px} .intro{font-size:1.05rem;max-width:640px;color:#e2edf6;margin:0}
+    main{padding:0 20px 45px}.search-card{position:relative;margin:-35px auto 26px;background:#fff;border:1px solid var(--border);border-radius:18px;box-shadow:0 13px 40px #172a3d13;padding:24px}label{display:block;font-weight:700;margin-bottom:9px;font-size:.93rem}.controls{display:grid;grid-template-columns:minmax(0,1fr) 210px;gap:16px;align-items:end}.field{position:relative}input,select{width:100%;height:48px;border:1.5px solid #b8c8d6;border-radius:10px;font:inherit;color:var(--ink);background:#fff;padding:0 14px}input{padding-right:48px}input:focus,select:focus,button:focus-visible,a:focus-visible{outline:3px solid var(--focus);outline-offset:2px}.clear{position:absolute;right:8px;bottom:7px;height:34px;width:34px;border:0;border-radius:8px;background:transparent;color:#526679;cursor:pointer;font-size:22px}.clear:hover{background:#eef3f7}.help{margin:13px 0 0;font-size:.85rem;color:var(--muted)}.section-head{display:flex;justify-content:space-between;align-items:center;gap:16px;margin:0 0 14px}.section-head h2{margin:0;font-size:1.25rem;letter-spacing:-.02em}.count{font-size:.82rem;font-weight:700;color:#48627a;background:#e5eef5;border-radius:99px;padding:5px 11px}.library-list{display:grid;grid-template-columns:1fr 1fr;gap:12px}.library{display:flex;justify-content:space-between;align-items:center;gap:14px;background:#fff;border:1px solid var(--border);border-radius:12px;padding:16px;min-height:83px}.library-name{font-size:.96rem;font-weight:700;line-height:1.4}.library-detail{font-size:.78rem;color:var(--muted);margin-top:3px}.action{display:inline-flex;align-items:center;justify-content:center;gap:6px;white-space:nowrap;border-radius:8px;padding:10px 12px;background:#194d78;color:#fff;text-decoration:none;font-size:.85rem;font-weight:700;min-width:89px;transition:background .15s}.action:hover{background:#123956}.action.disabled{background:#e7ebef;color:#75818d;pointer-events:none;cursor:not-allowed}.bulk-row{display:flex;align-items:center;flex-wrap:wrap;gap:12px;margin-top:18px}.bulk-button{border:0;border-radius:10px;padding:13px 19px;background:#9c312b;color:white;font-size:.95rem;font-weight:750;cursor:pointer}.bulk-button:hover:not(:disabled){background:#7d2521}.bulk-button:disabled{background:#e7ebef;color:#75818d;cursor:not-allowed}.bulk-help{font-size:.82rem;color:var(--muted);flex:1;min-width:220px}.bulk-status{font-size:.86rem;color:var(--ink);margin:8px 0 0}.note{font-size:.84rem;color:var(--muted);margin:20px 0 0}.footer{border-top:1px solid var(--border);padding-top:20px;font-size:.79rem;color:var(--muted);margin-top:32px}button{font-family:inherit}@media(max-width:720px){.banner{padding:40px 20px 65px}.controls,.library-list{grid-template-columns:1fr}.search-card{padding:19px}.library{padding:15px}.action{min-width:84px}}@media(max-width:400px){.library-name{font-size:.9rem}.action{padding:9px;font-size:.8rem}}@media(prefers-reduced-motion:reduce){.action{transition:none}}
+  </style>
+</head>
+<body>
+<header class="banner"><div class="wrap"><p class="eyebrow">Library search</p><h1>BorrowBox Library Search</h1><p class="intro">Search for a book, author or keyword across 10 library services, without typing the same search again and again.</p></div></header>
+<main class="wrap">
+  <section class="search-card" aria-label="Search options">
+    <div class="controls">
+      <div><label for="search">Book title, author or keyword</label><div class="field"><input id="search" type="search" placeholder="e.g. Liane Moriarty" autocomplete="off" autofocus><button id="clear" class="clear" type="button" title="Clear search" aria-label="Clear search" hidden>×</button></div></div>
+      <div><label for="format">Format</label><select id="format"><option value="eAudiobooks">Audiobooks</option><option value="eBooks">eBooks</option><option value="">All formats</option></select></div>
+    </div>
+    <p class="help" id="prompt">Enter a title, author or keyword to activate the library links.</p>
+    <div class="bulk-row">
+      <button id="open-all" class="bulk-button" type="button" disabled>Open all 10 libraries ↗</button>
+      <span class="bulk-help">Nuclear search: attempts to open 10 tabs at once. Your browser may block pop-ups or bring tabs to the foreground.</span>
+    </div>
+    <p class="bulk-status" id="bulk-status" role="status" aria-live="polite" hidden></p>
+  </section>
+  <section aria-labelledby="libraries-title">
+    <div class="section-head"><h2 id="libraries-title">Search libraries</h2><span class="count">10 services</span></div>
+    <div class="library-list" id="library-list"></div>
+    <p class="note">Each link opens that library’s BorrowBox search in a new tab. Search results and borrowing availability depend on the library. You may need membership to borrow.</p>
+  </section>
+  <footer class="footer">Independent search-link tool. Not affiliated with BorrowBox or the listed libraries. No search terms are collected or sent anywhere by this page; they are included in the BorrowBox link only when you open it.</footer>
+</main>
+<script>
+  'use strict';
+  const libraries = [
+    {name:'Boroondara Libraries',site:'boroondara'},
+    {name:'Glen Eira Libraries',site:'gleneira'},
+    {name:'Port Phillip Library',site:'portphillip'},
+    {name:'Brimbank Libraries',site:'brimbank'},
+    {name:'City of Melbourne Libraries',site:'melbourne'},
+    {name:'Stonnington Libraries',site:'stonnington'},
+    {name:'Wyndham Libraries',site:'wyndham'},
+    {name:'Melton Libraries',site:'melton'},
+    {name:'Monash Public Library Service',site:'monlib'},
+    {name:'Yarra Libraries',site:'yarra'}
+  ];
+  const input=document.getElementById('search');
+  const format=document.getElementById('format');
+  const list=document.getElementById('library-list');
+  const clear=document.getElementById('clear');
+  const prompt=document.getElementById('prompt');
+  const openAll=document.getElementById('open-all');
+  const bulkStatus=document.getElementById('bulk-status');
+  function searchUrl(lib,query,type){
+    return 'https://'+lib.site+'.borrowbox.com/search?q='+encodeURIComponent(query)+(type?'&format='+encodeURIComponent(type):'');
+  }
+  const elements=libraries.map(lib=>{
+    const card=document.createElement('div');card.className='library';
+    const detail=document.createElement('div');
+    const name=document.createElement('div');name.className='library-name';name.textContent=lib.name;
+    const sub=document.createElement('div');sub.className='library-detail';sub.textContent='BorrowBox catalogue';
+    detail.append(name,sub);
+    const link=document.createElement('a');link.className='action disabled';link.textContent='Search ↗';link.target='_blank';link.rel='noopener noreferrer';link.setAttribute('aria-disabled','true');link.tabIndex=-1;
+    card.append(detail,link);list.append(card);
+    return {lib,link};
+  });
+  function update(){
+    const query=input.value.trim();const type=format.value;
+    clear.hidden=!input.value;
+    openAll.disabled=!query;
+    bulkStatus.hidden=true;
+    prompt.textContent=query?'Choose a library below to search for “'+query+'”.':'Enter a title, author or keyword to activate the library links.';
+    for(const {lib,link} of elements){
+      if(!query){link.removeAttribute('href');link.classList.add('disabled');link.setAttribute('aria-disabled','true');link.tabIndex=-1;}
+      else{
+        // This is the search URL pattern used in the source Excel workbook.
+        const url=searchUrl(lib,query,type);
+        link.href=url;link.classList.remove('disabled');link.removeAttribute('aria-disabled');link.tabIndex=0;
+        link.setAttribute('aria-label','Search '+lib.name+' for '+query);
+      }
+    }
+  }
+  openAll.addEventListener('click',()=>{
+    const query=input.value.trim();if(!query)return;
+    const type=format.value;
+    let opened=0;
+    // Open directly in the click handler so browsers can treat this as a user gesture.
+    // Browser pop-up policies still decide how many tabs can be opened.
+    for(const lib of libraries){
+      const tab=window.open(searchUrl(lib,query,type),'_blank');
+      if(tab){opened++;try{tab.opener=null;}catch(e){}}
+    }
+    bulkStatus.hidden=false;
+    bulkStatus.textContent=opened===libraries.length
+      ?'Requested all 10 tabs. Your browser controls whether they open in the background.'
+      :opened===0
+        ?'Your browser blocked the new tabs. Allow pop-ups for this page, then try again. You can still use the individual library links below.'
+        :`Opened ${opened} of 10 tabs. Your browser appears to have blocked the others. Allow pop-ups for this page to try again.`;
+  });
+  input.addEventListener('input',update);format.addEventListener('change',update);
+  clear.addEventListener('click',()=>{input.value='';update();input.focus();});
+  update();
+</script>
+</body>
+</html>
